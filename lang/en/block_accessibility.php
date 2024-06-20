@@ -60,3 +60,10 @@ $string['color_input_error'] = 'Please enter a color in a format as such: #FF005
 $string['accessibility:addinstance'] = 'Add a new Accessibility block';
 $string['accessibility:myaddinstance'] = 'Add a new Accessibility block to My home';
 $string['jsnotloggedin'] = 'Error! Please check if you are logged-in to the system or contact your administrator';
+
+// Privacy.
+$string['privacy:metadata:block_accessibility'] = 'Information about the accessibility settings per user.';
+$string['privacy:metadata:block_accessibility:userid'] = 'The ID of the user with this accesibility setting.';
+$string['privacy:metadata:block_accessibility:fontsize'] = 'The font size chosen by the user.';
+$string['privacy:metadata:block_accessibility:colourscheme'] = 'The color scheme chosen by the user.';
+$string['privacy:metadata:block_accessibility:autoload_atbar'] = 'Whether or not the user has ATbar enabled.';
