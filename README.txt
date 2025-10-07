@@ -1,14 +1,10 @@
 Accessibility Block for Moodle
 
-PLEASE NOTE: This plugin is no longer being actively maintained by Brickfield. The main challenge is with the
-third-party external ATBar, which is not being maintained at all by its authors, at some point has lost all
-of its docs, and doesn't have an up-to-date SSL.
+NO LONGER USABLE! You have been warned. Not usable on any supported Moodle versions. Not maintainable due to dependancies on out-of-date third party libraries, such as the AT Bar.
 
-If someone has funding, and would like to cover the updating of this plugin, we would be happy to engage with you
-on this.
+Most of the features in this plugin are now standard browser options instead, and we would recommend and prioritise educating learners on how to use the many accessibility features of their browsers, thus making all their websites more barrier-free!
 
-We are planning on sharing a new plugin which will provide guidance to users with their font size, font colour,
-and other display options, depending on their browser. We will update this readme once it's available.
+Legacy Information: NO LONGER USABLE!
 
 Provides options for changing text size and colour scheme. Settings can be saved to persist between sessions. Colour settings can
 be defined at the block instance level (Block instance configuration).
