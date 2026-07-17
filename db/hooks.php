@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the Accessibility block.
+ * Hook callback registrations for the Accessibility block.
  *
  * @package   block_accessibility
  * @copyright 2026 Brickfield Education Labs <https://www.brickfield.ie/>
@@ -24,23 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = [
-    'block/accessibility:addinstance' => [
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/site:manageblocks',
-    ],
-    'block/accessibility:myaddinstance' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => [
-            'user' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/my:manageblocks',
+$callbacks = [
+    [
+        'hook' => \core\hook\output\before_standard_head_html_generation::class,
+        'callback' => '\block_accessibility\hook_callbacks::before_standard_head_html_generation',
     ],
 ];

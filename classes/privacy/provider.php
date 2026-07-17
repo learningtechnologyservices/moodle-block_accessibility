@@ -14,22 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_accessibility\privacy;
+
 /**
- * Declares the default settings of the page.
+ * Privacy provider for the Accessibility block.
+ *
+ * The block stores no personal data on the server. The reader's display
+ * preferences (text scale and colour theme) are held only in a functional
+ * cookie in the reader's own browser.
  *
  * @package   block_accessibility
- * @copyright Copyright &copy; 2009 Taunton's College
- * @author    Mark Johnson
+ * @copyright 2026 Brickfield Education Labs <https://www.brickfield.ie/>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-$defaults = array(
-    // The fg1 and bg1 would be reset/default colour - do not define it.
-        'bg2' => '#FFFFCC',
-        'fg2' => '', // Default theme colours will be unchanged.
-        'bg3' => '#99CCFF',
-        'fg3' => '',
-        'bg4' => '#000000',
-        'fg4' => '#FFFF00',
-);
+class provider implements \core_privacy\local\metadata\null_provider {
+    /**
+     * Explain why this plugin stores no personal data on the server.
+     *
+     * @return string
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
+}

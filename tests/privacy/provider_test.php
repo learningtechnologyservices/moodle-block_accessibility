@@ -14,33 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_accessibility\privacy;
+
 /**
- * Capability definitions for the Accessibility block.
+ * Tests for the Accessibility block privacy provider.
  *
  * @package   block_accessibility
  * @copyright 2026 Brickfield Education Labs <https://www.brickfield.ie/>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @coversDefaultClass \block_accessibility\privacy\provider
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$capabilities = [
-    'block/accessibility:addinstance' => [
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/site:manageblocks',
-    ],
-    'block/accessibility:myaddinstance' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => [
-            'user' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/my:manageblocks',
-    ],
-];
+final class provider_test extends \advanced_testcase {
+    /**
+     * The provider is a null provider whose reason string exists in the language file.
+     *
+     * @covers ::get_reason
+     */
+    public function test_get_reason_names_an_existing_metadata_string(): void {
+        $reason = provider::get_reason();
+        $this->assertSame('privacy:metadata', $reason);
+        $this->assertTrue(
+            get_string_manager()->string_exists($reason, 'block_accessibility'),
+            'The privacy reason string must exist in the component language file.'
+        );
+    }
+}

@@ -1,0 +1,7 @@
+# Windows "mark of the web" artifacts created when files are downloaded/copied via WSL.
+*:Zone.Identifier
+
+# Editor / OS cruft.
+.DS_Store
+Thumbs.db
+*~

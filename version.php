@@ -15,25 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define metadata for Accessibility block
+ * Version metadata for the Accessibility block.
  *
- * This file is the cornerstone of the block - when the page loads, it
- * checks if the user has a custom settings for the font size and colour
- * scheme (either in the session or the database) and creates a stylesheet
- * to override the standard styles with this setting.
+ * A complete rewrite and simplification. The block now runs entirely in the
+ * browser: a single cookie holds the reader's display preferences, and read-aloud
+ * uses the browser's built-in Web Speech API. No third-party libraries,
+ * no server round-trips, no custom database table.
  *
  * @package   block_accessibility
- * @copyright 2021 Brickfield Education Labs <https://www.brickfield.ie/>
- * @author    Jay Churchward <jay@brickfieldlabs.ie>
- * @author    Mark Johnson
+ * @copyright 2026 Brickfield Education Labs <https://www.brickfield.ie/>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_accessibility';
-$plugin->version = 2021092203;
-$plugin->requires = 2020061500; // Moodle 3.9 and up.
-$plugin->release  = '1.39.03 (Build - 2021092201)';
-$plugin->cron = 3600;
-$plugin->maturity = MATURITY_STABLE;
+$plugin->version   = 2026071025;
+$plugin->requires  = 2024100700;       // Moodle 4.5 and up.
+$plugin->supported = [405, 500];       // Moodle 4.5 to 5.0.
+$plugin->release   = '2.0.0 (Build - 2026071025)';
+$plugin->maturity  = MATURITY_STABLE;

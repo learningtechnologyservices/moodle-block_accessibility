@@ -15,350 +15,244 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define the accessibility block's class
+ * The Accessibility block class.
  *
- * @package    block_accessibility
- * @author      Mark Johnson <mark.johnson@tauntons.ac.uk>
- * @copyright   2010 Tauntons College, UK
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Renders the text-size, colour-theme and read-aloud controls. All behaviour
+ * lives in the browser (see amd/src/main.js); this class only builds accessible
+ * markup and hands a small configuration object to the JavaScript module.
+ *
+ * @package   block_accessibility
+ * @copyright 2026 Brickfield Education Labs <https://www.brickfield.ie/>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/blocks/accessibility/lib.php');
 
 /**
- * accessibility Block's class
+ * Accessibility block.
  */
 class block_accessibility extends block_base {
-
     /**
-     * URL of the JavaScript file.
-     */
-    const JS_URL = '/blocks/accessibility/module.js';
-    /**
-     * URL of the CSS declaration file.
-     */
-    const CSS_URL = '/blocks/accessibility/userstyles.php';
-    /**
-     * URL of the fontsize file.
-     */
-    const FONTSIZE_URL = '/blocks/accessibility/changesize.php';
-    /**
-     * URL of the colour change file.
-     */
-    const COLOUR_URL = '/blocks/accessibility/changecolour.php';
-    /**
-     * URL of the database file.
-     */
-    const DB_URL = '/blocks/accessibility/database.php';
-
-    /**
-     * Set the title and include the stylesheet
-     *
-     * We need to include the stylesheet here rather than in {@see get_content()} since get_content
-     * is sometimes called after $OUTPUT->heading(), e.g. such as /user/index.php where the middle
-     * region is hard-coded.
-     * However, /admin/plugins.php calls init() for each plugin after $OUTPUT->heading(), so the
-     * sheet is not included at all on that page.
+     * Set the block title.
      */
     public function init() {
         $this->title = get_string('pluginname', 'block_accessibility');
     }
 
     /**
-     * Called after init(). Here we have instance id so we can use config for specific instance
-     * The function will include CSS declarations into Moodle Page
-     * CSS declarations will be generated according to user settings and instance configuration
+     * Only one instance of the block is needed per page.
      *
-     */
-    public function specialization() {
-        $instanceid = $this->instance->id;
-
-        if (!$this->page->requires->is_head_done()) {
-
-            // Link default/saved settings to a page.
-            // Each block instance has it's own configuration form, so we need instance id.
-            $cssurl = new moodle_url(self::CSS_URL, ["instance_id" => $instanceid]);
-            $this->page->requires->css($cssurl);
-        }
-    }
-
-    /**
-     * instance_allow_multiple explicitly tells there cannot be multiple
-     * block instance on the same page
-     *
+     * @return bool
      */
     public function instance_allow_multiple() {
         return false;
     }
 
     /**
-     * Set where the block should be allowed to be added
+     * Allow the block everywhere.
      *
      * @return array
      */
     public function applicable_formats() {
-        return array('all' => true);
+        return ['all' => true];
     }
 
     /**
-     * Generate the contents for the block
+     * Build the block content.
      *
-     * @return object Block contents and footer
+     * @return stdClass|null
      */
     public function get_content() {
-        global $USER;
-        global $FULLME;
-        global $DB;
-
-        // Until Issue #63 is fixed, we don't want to display block for unauthenticated users.
-        if (!isloggedin()) {
-            return null;
-        }
-
         if ($this->content !== null) {
             return $this->content;
         }
 
-        // Get the current page url (redirection after action when no Javascript).
-        $params = array('redirect' => $FULLME);
-
-        // Set block services paths: changesize.php, changecolour.php and database.php.
-        $sizeurl = new moodle_url(self::FONTSIZE_URL, $params);
-        $coloururl = new moodle_url(self::COLOUR_URL, $params);
-
-        $params['op'] = 'save';
-        $params['size'] = true;
-        $params['scheme'] = true;
-        $dburl = new moodle_url(self::DB_URL, $params);
-
-        // Initialization of increase_font, decrease_font and save button.
-        $incattrs = array(
-                'title' => get_string('inctext', 'block_accessibility'),
-                'id' => "block_accessibility_inc",
-                'href' => $sizeurl->out(false, array('op' => 'inc'))
-        );
-        $decattrs = array(
-                'title' => get_string('dectext', 'block_accessibility'),
-                'id' => "block_accessibility_dec",
-                'href' => $sizeurl->out(false, array('op' => 'dec'))
-        );
-        $saveattrs = array(
-                'title' => get_string('save', 'block_accessibility'),
-                'id' => "block_accessibility_save",
-                'href' => $dburl->out(false)
-        );
-
-        // Initialization of reset button.
-        $resetattrs = array(
-                'id' => 'block_accessibility_reset',
-                'title' => get_string('resettext', 'block_accessibility'),
-                'href' => $sizeurl->out(false, array('op' => 'reset'))
-        );
-
-        // If any of increase/decrease buttons reached maximum size, disable it.
-        if (isset($USER->fontsize)) {
-            if ($USER->fontsize == MIN_FONTSIZE) {
-                $decattrs['class'] = 'disabled';
-                unset($decattrs['href']);
-            }
-            if ($USER->fontsize == MAX_FONTSIZE) {
-                $incattrs['class'] = 'disabled';
-                unset($incattrs['href']);
-            }
-        } else {
-            // Or disable reset button.
-            $resetattrs['class'] = 'disabled';
-        }
-
-        // Initialization of scheme profiles buttons.
-        $c1attrs = array(
-                'title' => get_string('col1text', 'block_accessibility'),
-                'id' => 'block_accessibility_colour1',
-                'href' => $coloururl->out(false, array('scheme' => 1))
-        );
-        $c2attrs = array(
-                'title' => get_string('col2text', 'block_accessibility'),
-                'id' => 'block_accessibility_colour2',
-                'href' => $coloururl->out(false, array('scheme' => 2))
-        );
-        $c3attrs = array(
-                'title' => get_string('col3text', 'block_accessibility'),
-                'id' => 'block_accessibility_colour3',
-                'href' => $coloururl->out(false, array('scheme' => 3))
-        );
-        $c4attrs = array(
-                'title' => get_string('col4text', 'block_accessibility'),
-                'id' => 'block_accessibility_colour4',
-                'href' => $coloururl->out(false, array('scheme' => 4))
-        );
-
-        if (!isset($USER->colourscheme)) {
-            $c1attrs['class'] = 'disabled';
-        }
-
-        // The display:inline-block CSS declaration is not applied to block's buttons because IE7 doesn't support, float is
-        // used instead for IE7 only.
-        $clearfix = '';
-        if (preg_match('/(?i)msie [1-7]/', $_SERVER['HTTP_USER_AGENT'])) {
-            $clearfix = html_writer::tag('div', '', array('style' => 'clear:both')); // Required for IE7.
-        }
-
-        // Render block HTML.
-        $content = '';
-
-        $strchar = get_string('char', 'block_accessibility');
-        $resetchar = "R";
-        $divattrs = array('id' => 'accessibility_controls', 'class' => 'content');
-        $listattrs = array('id' => 'block_accessibility_textresize', 'class' => 'button_row');
-
-        $content .= html_writer::start_tag('div', $divattrs);
-        $content .= html_writer::start_tag('ul', $listattrs);
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $strchar . '-', $decattrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $strchar, $resetattrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $strchar . '+', $incattrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', '&nbsp;', $saveattrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::end_tag('ul');
-
-        $content .= $clearfix;
-
-        // Colour change buttons.
-        $content .= html_writer::start_tag('ul', array('id' => 'block_accessibility_changecolour'));
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $resetchar, $c1attrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $strchar, $c2attrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $strchar, $c3attrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::start_tag('li', array('class' => 'access-button'));
-        $content .= html_writer::tag('a', $strchar, $c4attrs);
-        $content .= html_writer::end_tag('li');
-
-        $content .= html_writer::end_tag('ul');
-
-        $content .= $clearfix;
-
-        // Display "settings saved" or etc.
-        if (isset($USER->accessabilitymsg)) {
-            $message = $USER->accessabilitymsg;
-            unset($USER->accessabilitymsg);
-        } else {
-            $message = '';
-        }
-        $messageattrs = array('id' => 'block_accessibility_message', 'class' => 'clearfix');
-        $content .= html_writer::tag('div', $message, $messageattrs);
-
-        // Data to pass to module.js.
-        $jsdata['autoload_atbar'] = false;
-        $jsdata['instance_id'] = $this->instance->id;
-
-        // Render ATBar.
-        $showatbar = DEFAULT_SHOWATBAR;
-        if (isset($this->config->showATbar)) {
-            $showatbar = $this->config->showATbar;
-        }
-
-        if ($showatbar) {
-
-            // Load database record for a current user.
-            $options = $DB->get_record('block_accessibility', array('userid' => $USER->id));
-
-            // Initialize ATBar.
-            $checkboxattrs = array(
-                    'type' => 'checkbox',
-                    'value' => 1,
-                    'id' => 'atbar_auto',
-                    'name' => 'atbar_auto',
-                    'class' => 'atbar_control',
-            );
-
-            $labelattrs = array(
-                    'for' => 'atbar_auto',
-                    'class' => 'atbar_control'
-            );
-
-            if ($options && $options->autoload_atbar) {
-                $checkboxattrs['checked'] = 'checked';
-                $jsdata['autoload_atbar'] = true;
-            }
-
-            // ATbar launch button (if javascript is enabled).
-            $launchattrs = array(
-                    'type' => 'button',
-                    'value' => get_string('launchtoolbar', 'block_accessibility'),
-                    'id' => 'block_accessibility_launchtoolbar',
-                    'class' => 'atbar_control access-button'
-            );
-
-            // Render ATBar.
-            $content .= html_writer::empty_tag('input', $launchattrs);
-
-            $spanattrs = array('class' => 'atbar-always');
-            $content .= html_writer::start_tag('span', $spanattrs);
-            $content .= html_writer::empty_tag('input', $checkboxattrs);
-            $strlaunch = get_string('autolaunch', 'block_accessibility');
-            $content .= html_writer::tag('label', $strlaunch, $labelattrs);
-            $content .= html_writer::end_tag('span');
-        }
-
-        $content .= html_writer::end_tag('div');
-
-        // Loader icon.
-        $spanattrs = array('id' => 'loader-icon');
-        $content .= html_writer::start_tag('span', $spanattrs);
-        $content .= html_writer::end_tag('span');
-
-        $content .= $clearfix;
-
-        $this->content = new stdClass;
+        $this->content = new stdClass();
         $this->content->footer = '';
-        $this->content->text = $content;
+        $this->content->text = $this->render_tools();
 
-        // Keep in mind that dynamic AJAX mode cannot work properly with IE <= 8 (for now), so javascript will not even be loaded.
-        if (!preg_match('/(?i)msie [1-8]/', $_SERVER['HTTP_USER_AGENT'])) {
-            // Language strings to pass to module.js.
-            $this->page->requires->string_for_js('saved', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnosave', 'block_accessibility');
-            $this->page->requires->string_for_js('reset', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnosizereset', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnocolourreset', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnosize', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnocolour', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnosizereset', 'block_accessibility');
-            $this->page->requires->string_for_js('jsnotloggedin', 'block_accessibility');
-            $this->page->requires->string_for_js('launchtoolbar', 'block_accessibility');
+        // Hand the reusable strings and scale bounds to the browser module.
+        $config = [
+            'cookieName'   => 'bfa',
+            'minScale'     => 0.8,
+            'maxScale'     => 2.0,
+            'step'         => 0.1,
+            'defaultScale' => 1.0,
+            'pageLang'     => current_language(),
+            'strings'      => [
+                'reading'         => get_string('status_reading', 'block_accessibility'),
+                'stopped'         => get_string('status_stopped', 'block_accessibility'),
+                'nothingselected' => get_string('status_nothingselected', 'block_accessibility'),
+                'notsupported'    => get_string('status_notsupported', 'block_accessibility'),
+                'sizeset'         => get_string('status_sizeset', 'block_accessibility'),
+                'sizereset'       => get_string('status_sizereset', 'block_accessibility'),
+                'themeset'        => get_string('status_themeset', 'block_accessibility'),
+                'voicefallback'   => get_string('status_voicefallback', 'block_accessibility'),
+                'voicehelpintro'  => get_string('voice_help_intro', 'block_accessibility'),
+            ],
+        ];
 
-            $jsmodule = array(
-                    'name' => 'block_accessibility',
-                    'fullpath' => self::JS_URL,
-                    'requires' => array('base', 'node', 'stylesheet')
-            );
-
-            // Include js script and pass the arguments.
-            $this->page->requires->js_init_call('M.block_accessibility.init', $jsdata, false, $jsmodule);
-        }
+        $this->page->requires->js_call_amd('block_accessibility/main', 'init', [$config]);
 
         return $this->content;
     }
 
+    /**
+     * Assemble the accessible control markup.
+     *
+     * @return string
+     */
+    protected function render_tools(): string {
+        global $OUTPUT;
+
+        // Pre-fetch the visible strings so the template below stays readable.
+        $s = function (string $key): string {
+            return get_string($key, 'block_accessibility');
+        };
+
+        $sizelabel   = $s('sizelabel');
+        $decrease    = $s('decrease');
+        $reset       = $s('reset');
+        $increase    = $s('increase');
+
+        $themelabel  = $s('themelabel');
+        $themedefault = $s('theme_default');
+        $themecream  = $s('theme_cream');
+        $themeblue   = $s('theme_blue');
+        $themehigh   = $s('theme_highcontrast');
+        $themedefaultlabel = $s('theme_default_label');
+        $themecreamlabel   = $s('theme_cream_label');
+        $themebluelabel    = $s('theme_blue_label');
+        $themehighlabel    = $s('theme_highcontrast_label');
+        $themedark         = $s('theme_dark');
+        $themedarklabel    = $s('theme_dark_label');
+
+        $readlabel   = $s('readlabel');
+        $readselection = $s('read_selection');
+        $readpage    = $s('read_page');
+        $readselectionshort = $s('read_selection_short');
+        $readpageshort = $s('read_page_short');
+        $stop        = $s('read_stop');
+        $ratelabel   = $s('rate_label');
+        $voicelabel  = $s('voice');
+        $voicedefault = $s('voice_systemdefault');
+        $voicehelpbtn   = $s('voice_help_button');
+        $voicehelptitle = $s('voice_help_title');
+        $voicehelptip   = $s('voice_help_tip');
+        $voicehelplink  = $s('voice_help_link');
+
+        $noscript    = $s('noscript');
+
+        $aboutbtn    = $s('about_button');
+        $abouttitle  = $s('about_title');
+        $aboutbody   = $s('about_body');
+        $aboutclose  = $s('about_close');
+
+        $linktoolkit = $s('link_toolkit');
+        $linkscriofa = $s('link_scriofa');
+        $linksite    = $s('link_site');
+        $newtab      = $s('opens_new_tab');
+
+        $logo = $OUTPUT->image_url('logo', 'block_accessibility')->out();
+        $logoalt = $s('logo_alt');
+
+        // Screen-reader-only descriptive suffixes keep the visible symbol short
+        // while still meeting "Label in Name" (the visible text is included).
+        $srdec = html_writer::span(' ' . $s('decrease'), 'sr-only');
+        $srinc = html_writer::span(' ' . $s('increase'), 'sr-only');
+
+        $html = <<<HTML
+<div class="block_accessibility_tools" id="bfa-tools">
+
+  <div role="group" aria-labelledby="bfa-size-label" class="bfa-group">
+    <p id="bfa-size-label" class="bfa-label">{$sizelabel}</p>
+    <div class="bfa-btnrow">
+      <button type="button" class="bfa-btn" id="bfa-dec" title="{$decrease}">A&#8722;{$srdec}</button>
+      <button type="button" class="bfa-btn" id="bfa-reset" disabled>{$reset}</button>
+      <button type="button" class="bfa-btn" id="bfa-inc" title="{$increase}">A+{$srinc}</button>
+    </div>
+  </div>
+
+  <div role="group" aria-labelledby="bfa-theme-label" class="bfa-group">
+    <p id="bfa-theme-label" class="bfa-label">{$themelabel}</p>
+    <div class="bfa-btnrow">
+      <button type="button" class="bfa-btn bfa-theme bfa-swatch bfa-swatch-1" id="bfa-theme-1"
+              data-scheme="1" data-label="{$themedefault}" aria-label="{$themedefaultlabel}"
+              aria-pressed="true"><span aria-hidden="true">A</span></button>
+      <button type="button" class="bfa-btn bfa-theme bfa-swatch bfa-swatch-2" id="bfa-theme-2"
+              data-scheme="2" data-label="{$themecream}" aria-label="{$themecreamlabel}"
+              aria-pressed="false"><span aria-hidden="true">A</span></button>
+      <button type="button" class="bfa-btn bfa-theme bfa-swatch bfa-swatch-3" id="bfa-theme-3"
+              data-scheme="3" data-label="{$themeblue}" aria-label="{$themebluelabel}"
+              aria-pressed="false"><span aria-hidden="true">A</span></button>
+      <button type="button" class="bfa-btn bfa-theme bfa-swatch bfa-swatch-4" id="bfa-theme-4"
+              data-scheme="4" data-label="{$themehigh}" aria-label="{$themehighlabel}"
+              aria-pressed="false"><span aria-hidden="true">A</span></button>
+      <button type="button" class="bfa-btn bfa-theme bfa-swatch bfa-swatch-5" id="bfa-theme-5"
+              data-scheme="5" data-label="{$themedark}" aria-label="{$themedarklabel}"
+              aria-pressed="false"><span aria-hidden="true">A</span></button>
+    </div>
+  </div>
+
+  <div role="group" aria-labelledby="bfa-read-label" class="bfa-group bfa-read" id="bfa-read-group">
+    <p id="bfa-read-label" class="bfa-label">{$readlabel}</p>
+    <div class="bfa-btnrow">
+      <button type="button" class="bfa-btn" id="bfa-read-selection"><span aria-hidden="true">{$readselectionshort}</span><span
+        class="sr-only">{$readselection}</span></button>
+      <button type="button" class="bfa-btn" id="bfa-read-page"><span aria-hidden="true">{$readpageshort}</span><span
+        class="sr-only">{$readpage}</span></button>
+      <button type="button" class="bfa-btn" id="bfa-read-stop">{$stop}</button>
+    </div>
+    <div class="bfa-voice">
+      <label for="bfa-voice" id="bfa-voice-label">{$voicelabel}</label>
+      <select id="bfa-voice"><option value="">{$voicedefault}</option></select>
+      <button type="button" class="bfa-btn bfa-voicehelp" id="bfa-voicehelp-open" hidden><span
+        aria-hidden="true">&#9432;</span> {$voicehelpbtn}</button>
+    </div>
+    <div class="bfa-rate">
+      <label for="bfa-rate">{$ratelabel}</label>
+      <input type="range" id="bfa-rate" min="0.5" max="2" step="0.1" value="1">
+      <span id="bfa-rate-value" aria-hidden="true">1.0&#215;</span>
+    </div>
+  </div>
+
+  <p id="bfa-status" class="bfa-status" role="status" aria-live="polite"></p>
+
+  <noscript>
+    <p class="bfa-noscript">{$noscript}</p>
+  </noscript>
+
+  <div class="bfa-footer">
+    <button type="button" class="bfa-about-link" id="bfa-about-open">{$aboutbtn}</button>
+  </div>
+
+  <dialog id="bfa-about" class="bfa-dialog" aria-labelledby="bfa-about-title">
+    <div class="bfa-dialog-inner">
+      <img src="{$logo}" alt="{$logoalt}" class="bfa-logo" width="180" height="41">
+      <h2 id="bfa-about-title">{$abouttitle}</h2>
+      <p>{$aboutbody}</p>
+      <ul class="bfa-links">
+        <li><a href="https://www.brickfield.ie/accessibility-toolkit/" target="_blank"
+          rel="noopener">{$linktoolkit} {$newtab}</a></li>
+        <li><a href="https://www.brickfield.ie/scriofa/" target="_blank" rel="noopener">{$linkscriofa} {$newtab}</a></li>
+        <li><a href="https://www.brickfield.ie/" target="_blank" rel="noopener">{$linksite} {$newtab}</a></li>
+      </ul>
+      <button type="button" class="bfa-btn" id="bfa-about-close">{$aboutclose}</button>
+    </div>
+  </dialog>
+
+  <dialog id="bfa-voicehelp" class="bfa-dialog" aria-labelledby="bfa-voicehelp-title">
+    <div class="bfa-dialog-inner">
+      <h2 id="bfa-voicehelp-title">{$voicehelptitle}</h2>
+      <p id="bfa-voicehelp-intro"></p>
+      <p>{$voicehelptip}</p>
+      <p><a href="https://docs.brickfield.ie/block_accessibility/faq/" target="_blank"
+        rel="noopener">{$voicehelplink} {$newtab}</a></p>
+      <button type="button" class="bfa-btn" id="bfa-voicehelp-close">{$aboutclose}</button>
+    </div>
+  </dialog>
+
+</div>
+HTML;
+
+        return $html;
+    }
 }

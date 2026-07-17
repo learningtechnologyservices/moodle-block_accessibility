@@ -1,178 +1,595 @@
-body.jsdisabled #block_accessibility_launchtoolbar {
-    display: none;
+/* Accessibility block styles.
+ *
+ * The control panel is a self-contained light surface so it stays readable no
+ * matter which colour theme is active. Text scaling and colour themes are driven
+ * by a class and a CSS variable set on <html> from the reader's cookie.
+ */
+
+/* Screen-reader-only text. */
+.block_accessibility_tools .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-.block_accessibility {
-    position: relative; /* for loader.gif to position absolute */
-
-    /*disable selection*/
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+/* The control panel: an always-readable light island. */
+.block_accessibility_tools {
+    background-color: #fff;
+    color: #1a1a1a;
+    padding: 0.75rem;
+    border-radius: 6px;
+    line-height: 1.5;
+    font-size: 0.95rem;
 }
 
-#accessibility_controls .access-button {
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0 .15em;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    text-align: center;
-    background: -moz-linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.3) 100%) !important; /* FF3.6+ */
-    background:
-        -webkit-gradient(
-            linear,
-            left top,
-            left bottom,
-            color-stop(0%, rgba(254, 255, 232, 0)),
-            color-stop(100%, rgba(214, 219, 191, 0.3))
-        ) !important; /* Chrome,Safari4+ */
-    background:
-        -webkit-linear-gradient(
-            top,
-            rgba(254, 255, 232, 0) 0%,
-            rgba(214, 219, 191, 0.3) 100%
-        ) !important; /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.3) 100%) !important; /* Opera11.10+ */
-    background: -ms-linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.3) 100%) !important; /* IE10+ */
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00feffe8', endColorstr='#4dd6dbbf', GradientType=0)
-    !important; /* IE6-9 */
-    background: linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.3) 100%) !important; /* W3C */
-
-    /*disable selection*/
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+.block_accessibility_tools .bfa-group {
+    margin-bottom: 0.9rem;
 }
 
-#accessibility_controls .access-button:hover {
-    background: -moz-linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.5) 50%) !important; /* FF3.6+ */
-    background:
-        -webkit-gradient(
-            linear,
-            left top,
-            left bottom,
-            color-stop(0%, rgba(254, 255, 232, 0)),
-            color-stop(50%, rgba(214, 219, 191, 0.5))
-        ) !important; /* Chrome,Safari4+ */
-    background:
-        -webkit-linear-gradient(
-            top,
-            rgba(254, 255, 232, 0) 0%,
-            rgba(214, 219, 191, 0.5) 50%
-        ) !important; /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.5) 50%) !important; /* Opera11.10+ */
-    background: -ms-linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.5) 50%) !important; /* IE10+ */
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00feffe8', endColorstr='#80d6dbbf', GradientType=0)
-    !important; /* IE6-9 */
-    background: linear-gradient(top, rgba(254, 255, 232, 0) 0%, rgba(214, 219, 191, 0.5) 50%) !important; /* W3C */
+.block_accessibility_tools .bfa-label {
+    margin: 0 0 0.4rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #1a1a1a;
+    text-align: left;
 }
 
-.access-button a#block_accessibility_save {
-    background: url('[[pix:block_accessibility|document-save]]') !important;
-    background-attachment: fixed;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
+.block_accessibility_tools .bfa-btnrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
 }
 
-.access-button a#block_accessibility_save.disabled {
-    background: url('[[pix:block_accessibility|document-save-grey]]') !important;
-    background-attachment: fixed;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
+/* Buttons: 44px minimum target, clear border, dark text on white. */
+.block_accessibility_tools .bfa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.35rem 0.7rem;
+    background-color: #fff;
+    color: #1a1a1a;
+    border: 1px solid #767676;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 400;
+    cursor: pointer;
 }
 
-#accessibility_controls .access-button .disabled {
-    opacity: 0.3;
+.block_accessibility_tools .bfa-btn:hover {
+    background-color: #e9eef5;
+}
+
+.block_accessibility_tools .bfa-btn:focus-visible {
+    outline: 3px solid #0b5cad;
+    outline-offset: 2px;
+}
+
+/* Colour-theme swatches: each button previews its theme's own background and text
+ * colour with a sample "A". The visible glyph is decorative (aria-hidden); the button's
+ * accessible name comes from its aria-label, which describes the colours.
+ * Sized smaller than the 44px action buttons so all five sit on one line; still well
+ * above the 24px minimum target size. */
+.block_accessibility_tools .bfa-swatch {
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0.2rem;
+}
+
+.block_accessibility_tools .bfa-swatch-1 {
+    background-color: #fff;
+    color: #1a1a1a;
+}
+
+.block_accessibility_tools .bfa-swatch-2 {
+    background-color: #fbf6e9;
+    color: #1a1a1a;
+}
+
+.block_accessibility_tools .bfa-swatch-3 {
+    background-color: #e7f0fb;
+    color: #1a1a1a;
+}
+
+.block_accessibility_tools .bfa-swatch-4 {
+    background-color: #000;
+    color: #ffe14d;
+}
+
+.block_accessibility_tools .bfa-swatch-5 {
+    background-color: #1a1d21;
+    color: #e9ecef;
+}
+
+/* Keep each swatch showing its own colours on hover instead of the generic hover wash. */
+.block_accessibility_tools .bfa-swatch-1:hover {
+    background-color: #f0f0f0;
+}
+
+.block_accessibility_tools .bfa-swatch-2:hover {
+    background-color: #f5eeda;
+}
+
+.block_accessibility_tools .bfa-swatch-3:hover {
+    background-color: #d8e8fa;
+}
+
+.block_accessibility_tools .bfa-swatch-4:hover {
+    background-color: #1a1a1a;
+}
+
+.block_accessibility_tools .bfa-swatch-5:hover {
+    background-color: #2f353b;
+}
+
+/* Active colour-theme swatch: shown with a border ring (not colour alone). */
+.block_accessibility_tools .bfa-theme[aria-pressed="true"] {
+    font-weight: 700;
+    border-width: 2px;
+    border-color: #0b5cad;
+    box-shadow: inset 0 0 0 2px #0b5cad;
+}
+
+.block_accessibility_tools .bfa-btn[disabled] {
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
-#accessibility_controls .access-button a {
-    display: block;
+/* Speech-rate control. */
+.block_accessibility_tools .bfa-rate {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+.block_accessibility_tools .bfa-rate label {
+    color: #1a1a1a;
+}
+
+.block_accessibility_tools .bfa-rate input[type="range"] {
+    flex: 1 1 8rem;
+    min-width: 6rem;
+}
+
+.block_accessibility_tools .bfa-voice {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+.block_accessibility_tools .bfa-voice label {
+    color: #1a1a1a;
+}
+
+.block_accessibility_tools .bfa-voice select {
+    flex: 1 1 10rem;
+    min-width: 8rem;
+    max-width: 100%;
+    padding: 0.3rem;
+    background-color: #fff;
+    color: #1a1a1a;
+    border: 1px solid #767676;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.block_accessibility_tools .bfa-voice select:focus-visible {
+    outline: 3px solid #0b5cad;
+    outline-offset: 2px;
+}
+
+/* Shown in place of the voice menu when the browser has no voice for the page language.
+ * Reuses the .bfa-btn styling; spans the row and reads left-aligned like a link-button. */
+.block_accessibility_tools .bfa-voice .bfa-voicehelp {
+    flex: 1 1 100%;
+    text-align: left;
+}
+
+/* Live status region: visually hidden but still announced to screen readers through
+ * aria-live, so every text-size / colour-theme / read-aloud change is spoken without
+ * taking up any space in the panel. Uses the same visually-hidden technique as .sr-only;
+ * position:absolute keeps it out of the layout entirely. */
+.block_accessibility_tools .bfa-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.block_accessibility_tools .bfa-noscript {
+    margin: 0.5rem 0 0;
+    color: #1a1a1a;
+    text-align: left;
+}
+
+/* Footer "About" trigger, styled as a link and underlined for a non-colour cue. */
+.block_accessibility_tools .bfa-footer {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #ccc;
+}
+
+.block_accessibility_tools .bfa-about-link {
+    min-height: 24px;
+    padding: 0.2rem 0;
+    background: none;
+    border: none;
+    color: #0b5cad;
+    text-decoration: underline;
+    font-size: 0.9rem;
     cursor: pointer;
-    color: #000;
-    border-radius: 2px;
-    padding: .15em .3em;
-    min-width: 1.5em;
 }
 
-#accessibility_controls .access-button:active,
-#accessibility_controls .access-button:focus {
-    border: 1px solid #f24602;
+.block_accessibility_tools .bfa-about-link:focus-visible {
+    outline: 3px solid #0b5cad;
+    outline-offset: 2px;
 }
 
-#accessibility_controls .access-button img {
-    vertical-align: middle;
-}
-
-#accessibility_controls input {
-    margin: 0 .2em;
-}
-
-#accessibility_controls ul {
-    list-style: none;
-    margin: .4em 0;
+/* About dialog. */
+.block_accessibility_tools .bfa-dialog {
+    max-width: 32rem;
     padding: 0;
+    border: 1px solid #767676;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #1a1a1a;
 }
 
-/* ATBar styles */
-#toolbar-launch {
-    position: absolute;
-    padding: 0;
-    top: -3px;
-    left: 50%;
+.block_accessibility_tools .bfa-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-#toolbar-launch img {
-    padding: 0;
-    opacity: 0.6;
+.block_accessibility_tools .bfa-dialog-inner {
+    max-width: 60ch;
+    padding: 1.25rem;
+    line-height: 1.5;
+    text-align: left;
 }
 
-.atbar-always {
-    display: inline-block;
+.block_accessibility_tools .bfa-logo {
+    display: block;
+    height: auto;
+    max-width: 180px;
+    margin-bottom: 0.75rem;
 }
 
-#loader-icon {
-    position: absolute;
-    width: 54px;
-    height: 55px;
-    top: 42%;
-    left: 5em;
-    background: url('[[pix:block_accessibility|loader]]') !important;
-    display: none;
+.block_accessibility_tools .bfa-dialog-inner h2 {
+    margin: 0 0 0.6rem;
+    font-size: 1.25rem;
 }
 
-#sbar {
-    top: 50px !important;
-    z-index: 1100 !important; /* one less than profile menu */
+.block_accessibility_tools .bfa-dialog-inner p {
+    margin: 0 0 1rem;
 }
 
-/* Fix dictionary/text to speech/styles pop-up to allow scrolling and make responsive */
-#at-facebox {
-    width: 100% !important;
-    position: fixed !important;
-    bottom: 0 !important;
-    right: auto !important;
-    left: 0 !important;
-    top: auto !important;
+.block_accessibility_tools .bfa-links {
+    margin: 0 0 1rem;
+    padding-left: 1.2rem;
+    text-align: left;
 }
-.at-fb-tb-body {
-    width: 96vw !important;
+
+.block_accessibility_tools .bfa-links li {
+    margin-bottom: 0.4rem;
 }
-div.at-fb-content div {
-    height: 30vh !important;
+
+.block_accessibility_tools .bfa-dialog-inner a {
+    color: #0b5cad;
+    text-decoration: underline;
 }
-.at-fb-footer {
-    width: 40px !important;
-    float: right !important;
-    position: absolute !important;
-    top: 10px !important;
-    right: 0 !important;
-    border-top: 0 solid transparent !important;
+
+.block_accessibility_tools .bfa-dialog-inner a:focus-visible {
+    outline: 3px solid #0b5cad;
+    outline-offset: 2px;
+}
+
+/* --- Reader preferences applied to the whole page via <html> classes. --- */
+
+/* These rules deliberately override the active Moodle theme's own colours and
+ * transitions site-wide, so !important is required to win against theme selectors. */
+/* stylelint-disable declaration-no-important */
+
+/* Text scaling: scales the root font size, so rem-based themes grow evenly. */
+html.bfa-font-active {
+    font-size: calc(100% * var(--bfa-scale, 1)) !important;
+}
+
+/* Cream and Blue are full-page reading themes, driven through the same two mechanisms
+ * as High contrast and Dark: the `--bs-*` overrides recolour Bootstrap-native
+ * components, and the unified surface list below (which now includes schemes 2 and 3)
+ * reaches the Moodle-specific surfaces. They are LIGHT themes, so unlike dark/HC they
+ * do NOT set `data-bs-theme` — dark text on a light tint. Palettes are WCAG 2.2 AA
+ * verified: cream text 13.3:1, links 6.2:1; blue text 13.2:1, links 7.1:1. */
+html.bfa-scheme-2 {
+    --bs-body-bg: #fbf6e9;
+    --bs-body-bg-rgb: 251, 246, 233;
+    --bs-body-color: #2d2a24;
+    --bs-body-color-rgb: 45, 42, 36;
+    --bs-emphasis-color: #000;
+    --bs-heading-color: #2d2a24;
+    --bs-secondary-bg: #f3ead0;
+    --bs-secondary-color: #2d2a24;
+    --bs-tertiary-bg: #efe4c6;
+    --bs-tertiary-color: #2d2a24;
+    --bs-border-color: #8a7a52;
+    --bs-link-color: #0b5cad;
+    --bs-link-color-rgb: 11, 92, 173;
+    --bs-link-hover-color: #08447e;
+    --bs-card-bg: #f3ead0;
+    --bs-card-color: #2d2a24;
+    --bs-dropdown-bg: #fbf6e9;
+    --bs-dropdown-color: #2d2a24;
+    --bs-list-group-bg: #fbf6e9;
+    --bs-list-group-color: #2d2a24;
+    --bfa-surface: #fbf6e9;
+    --bfa-raised: #f3ead0;
+    --bfa-text: #2d2a24;
+    --bfa-link: #0b5cad;
+    --bfa-edge: #8a7a52;
+}
+
+html.bfa-scheme-3 {
+    --bs-body-bg: #e7f0fb;
+    --bs-body-bg-rgb: 231, 240, 251;
+    --bs-body-color: #1a2733;
+    --bs-body-color-rgb: 26, 39, 51;
+    --bs-emphasis-color: #000;
+    --bs-heading-color: #1a2733;
+    --bs-secondary-bg: #d7e6f8;
+    --bs-secondary-color: #1a2733;
+    --bs-tertiary-bg: #cadef4;
+    --bs-tertiary-color: #1a2733;
+    --bs-border-color: #5a83ba;
+    --bs-link-color: #0a4f95;
+    --bs-link-color-rgb: 10, 79, 149;
+    --bs-link-hover-color: #073a6f;
+    --bs-card-bg: #d7e6f8;
+    --bs-card-color: #1a2733;
+    --bs-dropdown-bg: #e7f0fb;
+    --bs-dropdown-color: #1a2733;
+    --bs-list-group-bg: #e7f0fb;
+    --bs-list-group-color: #1a2733;
+    --bfa-surface: #e7f0fb;
+    --bfa-raised: #d7e6f8;
+    --bfa-text: #1a2733;
+    --bfa-link: #0a4f95;
+    --bfa-edge: #5a83ba;
+}
+
+/* High contrast — PROTOTYPE (approach A + B), scheme 4 only.
+ *
+ * A. Redefine the Bootstrap 5.3 colour custom properties on the scheme root. Every
+ *    Bootstrap-native component and utility (cards, dropdowns, list groups, badges,
+ *    form controls, buttons, `.text-*`, borders, links) reads these at runtime, so
+ *    they recolour through the theme's own cascade instead of an enumerated list.
+ * B. The JS also sets `data-bs-theme="dark"` on <html>, which activates Bootstrap's
+ *    dark-mode component behaviour (close-button icons, form controls, shadows) that
+ *    is not purely variable-driven.
+ *
+ * `--bs-white` is deliberately left alone (overriding it would turn `.text-white`
+ * black); `.bg-white` surfaces are handled by the mop-up below instead.
+ */
+html.bfa-scheme-4 {
+    --bs-body-bg: #000;
+    --bs-body-bg-rgb: 0, 0, 0;
+    --bs-body-color: #fff;
+    --bs-body-color-rgb: 255, 255, 255;
+    --bs-emphasis-color: #fff;
+    --bs-emphasis-color-rgb: 255, 255, 255;
+    --bs-heading-color: #fff;
+    --bs-secondary-bg: #000;
+    --bs-secondary-color: #fff;
+    --bs-tertiary-bg: #000;
+    --bs-tertiary-color: #fff;
+    --bs-border-color: #fff;
+    --bs-link-color: #ffe14d;
+    --bs-link-color-rgb: 255, 225, 77;
+    --bs-link-hover-color: #fff;
+    --bs-card-bg: #000;
+    --bs-card-color: #fff;
+    --bs-dropdown-bg: #000;
+    --bs-dropdown-color: #fff;
+    --bs-dropdown-link-color: #ffe14d;
+    --bs-list-group-bg: #000;
+    --bs-list-group-color: #fff;
+}
+
+/* --- Unified full-page surface system for Cream (2), Blue (3), High contrast (4)
+ *     and Dark (5). ---
+ *
+ * The `--bs-*` overrides on each scheme root recolour every Bootstrap-native component
+ * through the theme's own cascade. This block handles the Moodle-specific surfaces
+ * whose colours are compiled from SCSS variables (cards, the book content box,
+ * `.generalbox`, quiz `.formulation`, tables, blocks, secondary navigation, drawers)
+ * and so cannot be reached by runtime custom properties.
+ *
+ * One selector list serves both schemes; the colours come from per-scheme helper
+ * variables, so High contrast stays flat black while Dark keeps a lighter raised
+ * surface for depth. When a new stray-light surface is found, add its selector to the
+ * one list below and both schemes are fixed together.
+ *
+ * Deliberately NOT recoloured: images, media players and MathJax output (untouched),
+ * quiz question-navigation buttons (they signal answered/unanswered state by colour),
+ * and the accessibility panel itself (kept a readable light island). */
+html.bfa-scheme-4 {
+    --bfa-surface: #000;
+    --bfa-raised: #000;
+    --bfa-text: #fff;
+    --bfa-link: #ffe14d;
+    --bfa-edge: #fff;
+}
+
+html.bfa-scheme-5 {
+    --bfa-surface: #1a1d21;
+    --bfa-raised: #24282d;
+    --bfa-text: #e9ecef;
+    --bfa-link: #48a1f1;
+    --bfa-edge: #3a4149;
+}
+
+/* Page-level base surfaces. */
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) :is(
+body, #page, #page-wrapper, #page-content, #topofscroll,
+#region-main-box, #region-main, .main-inner, [role="main"], .course-content,
+.bg-white, .bg-light, .bg-body, .bg-body-secondary, .bg-body-tertiary
+) {
+    background-color: var(--bfa-surface) !important;
+    background-image: none !important;
+    color: var(--bfa-text) !important;
+}
+
+/* Discrete raised containers: cards, boxes, tables, navigation, drawers, blocks,
+ * book content, quiz question bodies, modals, dropdowns. */
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) :is(
+.card, .card-body, .card-header, .card-footer,
+.box, .generalbox, .infobox,
+.activity-header, .activity-item, .activityinstance,
+.course-section, .section, .sectionbody,
+.book_content, .book_toc, .navtop, .navbottom,
+.que, .que .formulation, .que .content, .que .info, .que .comment,
+table, .table, .generaltable, .flexible, thead, tbody, tr, td, th,
+.secondary-navigation, .secondary-navigation .navigation, .tertiary-navigation, .moremenu,
+.navbar, .nav-tabs,
+.drawer, .drawercontent, [data-region="fixed-drawer"], [data-region="blocks-column"],
+.drawer-left, .drawer-right,
+.block, .block .card-body, .block .content,
+.modal-content, .modal-header, .modal-body, .modal-footer,
+.dropdown-menu, .list-group-item, .popover, .popover-header, .popover-body
+) {
+    background-color: var(--bfa-raised) !important;
+    background-image: none !important;
+    color: var(--bfa-text) !important;
+    border-color: var(--bfa-edge) !important;
+}
+
+/* Links keep the scheme link colour and an underline (non-colour cue). Elements that
+ * are also buttons (`.btn`, incl. quiz question-navigation `.qnbutton`) are excluded:
+ * they take their colours from the `--bs-*` variables, and the quiz nav squares must
+ * keep their own answered/unanswered state colours rather than all turning link-colour. */
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) :is(
+a, .navbar .nav-link, .breadcrumb-item a, .list-group-item-action
+):not(.btn):not(.qnbutton) {
+    color: var(--bfa-link) !important;
+    text-decoration: underline !important;
+}
+
+/* Quiz question-navigation squares: keep them legible on dark surfaces without
+ * forcing their border, so Moodle's per-state colour stripe (answered / not yet
+ * answered / current) still distinguishes them. */
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) .qnbutton {
+    background-color: var(--bfa-raised) !important;
+    color: var(--bfa-text) !important;
+}
+
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) .qnbutton:hover,
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) .qnbutton:focus {
+    background-color: var(--bfa-surface) !important;
+}
+
+/* The accessibility panel stays a legible light island in both schemes, so its own
+ * controls never inherit the page recolour. Listed after the surfaces above so it wins
+ * on both specificity and source order. */
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) :is(
+.block_accessibility,
+.block_accessibility .card,
+.block_accessibility .card-body,
+.block_accessibility_tools
+) {
+    background-color: #fff !important;
+    border-color: #ccc !important;
+}
+
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) .block_accessibility_tools *:not(a):not(button) {
+    color: #1a1a1a !important;
+}
+
+/* Panel links keep their own accessible blue on the light island, not the scheme
+ * link colour (yellow/blue on white would fail contrast). */
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) .block_accessibility_tools a {
+    color: #0b5cad !important;
+    text-decoration: underline !important;
+}
+
+/* Dark mode — scheme 5.
+ *
+ * Uses the same A + B + C mechanism as scheme 4 (high contrast), but with a
+ * designed grey palette that keeps surface depth rather than flat black:
+ *   A. Redefine the Bootstrap 5.3 colour custom properties on the scheme root.
+ *   B. The JS (and pre-paint head script) also set `data-bs-theme="dark"`, which
+ *      here is Bootstrap's genuine dark mode used as intended — not a filter/invert.
+ *   C. Mop-up for Moodle-custom surfaces compiled from SCSS variables.
+ *
+ * Palette is WCAG 2.2 AA verified against its surfaces:
+ *   body #1a1d21 / cards #24282d; text #e9ecef (14.3:1 / 12.5:1);
+ *   links #48a1f1 (6.2:1 / 5.4:1); borders #606a73 (3.1:1 UI).
+ */
+html.bfa-scheme-5 {
+    --bs-body-bg: #1a1d21;
+    --bs-body-bg-rgb: 26, 29, 33;
+    --bs-body-color: #e9ecef;
+    --bs-body-color-rgb: 233, 236, 239;
+    --bs-emphasis-color: #f8f9fa;
+    --bs-emphasis-color-rgb: 248, 249, 250;
+    --bs-heading-color: #f8f9fa;
+    --bs-secondary-bg: #24282d;
+    --bs-secondary-color: #e9ecef;
+    --bs-tertiary-bg: #2f353b;
+    --bs-tertiary-color: #e9ecef;
+    --bs-border-color: #606a73;
+    --bs-link-color: #48a1f1;
+    --bs-link-color-rgb: 72, 161, 241;
+    --bs-link-hover-color: #7bbcf5;
+    --bs-card-bg: #24282d;
+    --bs-card-color: #e9ecef;
+    --bs-dropdown-bg: #24282d;
+    --bs-dropdown-color: #e9ecef;
+    --bs-dropdown-link-color: #e9ecef;
+    --bs-list-group-bg: #24282d;
+    --bs-list-group-color: #e9ecef;
+}
+
+/* Scheme 5 surfaces are recoloured by the unified dark-surface system above (shared
+ * with scheme 4), driven by the scheme-5 helper variables. */
+
+/* Respect a reader's request for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+    .block_accessibility_tools *,
+    .block_accessibility_tools *::before,
+    .block_accessibility_tools *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Forced colours (Windows High Contrast): the system palette replaces the custom
+ * colours above, so restore the selected-theme and focus cues with system colours.
+ * The selected theme button also keeps its bold weight as a non-colour cue. */
+@media (forced-colors: active) {
+    .block_accessibility_tools .bfa-theme[aria-pressed="true"] {
+        border-color: Highlight;
+    }
+
+    .block_accessibility_tools .bfa-btn:focus-visible,
+    .block_accessibility_tools .bfa-about-link:focus-visible,
+    .block_accessibility_tools .bfa-dialog-inner a:focus-visible {
+        outline-color: Highlight;
+    }
 }

@@ -15,120 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines upgrades for Accessibility Block
+ * Upgrade steps for the Accessibility block.
  *
  * @package   block_accessibility
- * @copyright Copyright 2009 onwards Taunton's College
- * @author Mark Johnson <mark.johnson@tauntons.ac.uk>
+ * @copyright 2026 Brickfield Education Labs <https://www.brickfield.ie/>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 /**
- * Controls the upgrade script.
+ * Run the upgrade.
  *
- * @param integer $oldversion
+ * @param int $oldversion
  * @return bool
  */
-function xmldb_block_accessibility_upgrade($oldversion = 0) {
-
-    global $CFG, $THEME, $DB;
+function xmldb_block_accessibility_upgrade($oldversion) {
+    global $DB;
 
     $dbman = $DB->get_manager();
 
-    // And upgrade begins here. For each one, you'll need one
-    // block of code similar to the next one. Please, delete
-    // this comment lines once this file start handling proper
-    // upgrade code.
-
-    if ($oldversion < 2009071000) {
-
-        // Changing type of field fontsize on table accessibility to number.
-        $table = new XMLDBTable('accessibility');
-        $field = new XMLDBField('fontsize');
-        $field->setAttributes(XMLDB_TYPE_NUMBER,
-                '4, 1',
-                XMLDB_UNSIGNED,
-                null,
-                null,
-                null,
-                null,
-                null,
-                'userid');
-
-        // Launch change of type for field fontsize.
-        $result = $result && $dbman->change_field_type($table, $field);
-        upgrade_block_savepoint(true, 2009071000, 'accessibility');
-    }
-
-    if ($oldversion < 2009082500) {
-
-        // Define field colourscheme to be added to accessibility.
-        $table = new xmldb_table('accessibility');
-        $field = new xmldb_field('colourscheme',
-                XMLDB_TYPE_INTEGER,
-                '1',
-                XMLDB_UNSIGNED,
-                null,
-                null,
-                null,
-                null,
-                null,
-                'fontsize');
-
-        // Launch add field colourscheme.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
+    // Version 2.0.0 moves all preferences into a browser cookie and removes the
+    // server-side store. Drop the legacy table if it still exists.
+    if ($oldversion < 2026070900) {
+        $table = new xmldb_table('block_accessibility');
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
         }
-        upgrade_block_savepoint(true, 2009082500, 'accessibility');
-    }
-
-    if ($oldversion < 2010121500) {
-
-        // Define field autoload_atbar to be added to accessibility.
-        $table = new xmldb_table('accessibility');
-        $cs = new xmldb_field('colourscheme',
-                XMLDB_TYPE_INTEGER,
-                '1',
-                XMLDB_UNSIGNED,
-                null,
-                null,
-                null,
-                null,
-                null,
-                'fontsize');
-        $field = new xmldb_field('autoload_atbar',
-                XMLDB_TYPE_INTEGER,
-                '1',
-                XMLDB_UNSIGNED,
-                XMLDB_NOTNULL,
-                null,
-                '0',
-                'colourscheme');
-        if (!$dbman->field_exists($table, $cs)) {
-            $dbman->add_field($table, $cs);
-        }
-        // Conditionally launch add field autoload_atbar.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Accessibility savepoint reached.
-        upgrade_block_savepoint(true, 2010121500, 'accessibility');
-    }
-
-    if ($oldversion < 2011122000) {
-
-        // Define table accessibility to be renamed to block_accessibility.
-        $table = new xmldb_table('accessibility');
-
-        // Launch rename table for accessibility.
-        $dbman->rename_table($table, 'block_accessibility');
-
-        // Accessibility savepoint reached.
-        upgrade_block_savepoint(true, 2011122000, 'accessibility');
+        upgrade_block_savepoint(true, 2026070900, 'accessibility');
     }
 
     return true;
-
 }
