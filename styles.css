@@ -515,6 +515,12 @@ a, .navbar .nav-link, .breadcrumb-item a, .list-group-item-action
 ) {
     background-color: #fff !important;
     border-color: #ccc !important;
+    color: #1a1a1a !important;
+}
+
+:is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5)
+.block_accessibility .card-title {
+    color: #1a1a1a !important;
 }
 
 :is(html.bfa-scheme-2, html.bfa-scheme-3, html.bfa-scheme-4, html.bfa-scheme-5) .block_accessibility_tools *:not(a):not(button) {
